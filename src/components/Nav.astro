@@ -1,0 +1,50 @@
+  <header class="flex justify-between items-center py-4 px-10 fixed top-0 w-full text-white z-40">
+
+    <h1>Daniel Flores - Cinematographer</h1>
+
+    <nav>
+      <ul class="flex [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#musicvideos">Music Videos</a></li>
+        <li><a href="#commercial">Commercial</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div id="menuBackDrop" class="-z-10 absolute opacity-0 bg-black/5 backdrop-blur-lg rounded translate-x-[var(--left)] translate-y-[var(--top)] w-[var(--width)] h-[var(--height)] transition-all duration-300 delay-100 ease-in-out left-0 top-0"></div>
+
+
+    </div>
+
+  </header>
+
+<script>
+const listItem = document.querySelectorAll("li")
+const menuBackDrop = document.querySelector("#menuBackDrop") as HTMLElement
+
+
+listItem.forEach((item) => {
+    item.addEventListener("mouseover", () => {
+        const { left, top, width, height } = item.getBoundingClientRect();
+        const { clientHeight, clientWidth } = item;
+
+        console.log({ left, top, width, height});
+        console.log({ clientHeight, clientWidth})
+
+
+        menuBackDrop.style.setProperty("--left", `${left}px`);
+        menuBackDrop.style.setProperty("--top", `${top}px`);
+        menuBackDrop.style.setProperty("--width", `${width}px`);
+        menuBackDrop.style.setProperty("--height", `${height}px`);
+
+        menuBackDrop.style.opacity = "1";
+        menuBackDrop.style.visibility = "visible";
+    });
+
+    item.addEventListener("mouseleave", () => {
+        menuBackDrop.style.opacity = "0";
+        menuBackDrop.style.visibility = "hidden";
+    });
+
+});
+</script>
