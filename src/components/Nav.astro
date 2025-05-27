@@ -1,9 +1,12 @@
-  <header id="header" class="flex justify-between items-center py-4 px-10 fixed top-0 w-full text-white z-40">
+  <header id="header" class="flex justify-between items-center py-4 px-10 fixed top-0 w-full text-black z-40">
 
-    <h1>Daniel Flores - Cinematographer</h1>
-
+    <div class="flex flex-col items-start">
+    <h1>Cinematographer</h1>
+    <h3>Based in Madrid</h3>
+    </div>
+    
     <nav>
-      <ul class="flex [&>li>a]:text-current [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2 [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:ease-in-out">
+      <ul class="flex [&>li>a]:text-current [&>li>a]:inline-block [&>li>a]:px-3 [&>li>a]:py-1 [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:ease-in-out">
         <li><a href="#home">Home</a></li>
         <li><a href="#musicvideos">Music Videos</a></li>
         <li><a href="#commercial">Commercial</a></li>
@@ -19,6 +22,8 @@
 
   </header>
 
+
+  <!-- Add this script to handle the header color change on scroll
 <script>
   const headerEl = document.querySelector("#header") as HTMLElement
   
@@ -42,8 +47,10 @@
   const sectionsElement = document.querySelectorAll(".landing-section")
   sectionsElement.forEach((section) => observer.observe(section))
 
-</script>
+</script>  -->
 
+
+<!-- Add this script to handle the menu backdrop effect -->
 <script>
 const listItem = document.querySelectorAll("li")
 const menuBackDrop = document.querySelector("#menuBackDrop") as HTMLElement

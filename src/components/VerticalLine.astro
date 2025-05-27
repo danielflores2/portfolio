@@ -1,0 +1,24 @@
+---
+// Puedes pasar props opcionales si quieres personalizar la línea
+const {
+  height = '100vh',
+  color = 'rgba(0,0,0,0.1)',
+  thickness = '2px',
+  left = '50%',
+  top = '0',
+  zIndex = '-1',
+} = Astro.props;
+---
+
+<div
+  style={`
+    position: absolute;
+    top: ${top};
+    left: ${left};
+    width: ${thickness};
+    height: ${height};
+    background-color: ${color};
+    z-index: ${zIndex};
+    transform: translateX(-50%);
+  `}
+/>

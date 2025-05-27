@@ -1,0 +1,53 @@
+---
+// src/components/Carousel.astro
+const images = [
+  "/images/mini1.jpg",
+  "/images/mini2.jpg",
+  "/images/mini3.jpg",
+  "/images/mini1.jpg",
+  "/images/mini2.jpg",
+  "/images/mini3.jpg",
+    "/images/mini1.jpg",
+  "/images/mini2.jpg",
+  "/images/mini3.jpg",
+  "/images/mini1.jpg",
+  "/images/mini2.jpg",
+  "/images/mini3.jpg",
+];
+---
+<section data-header-color="black">
+<style>
+  .horizontal-scroll {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<div
+  class="carousel horizontal-scroll flex overflow-x-auto gap-4 px-10"
+  id="carousel"
+>
+  {images.map((src) => (
+    <div class="flex-shrink-0 snap-center w-1/6">
+      <img src={src} alt="Carrusel" class="w-full h-auto object-cover" />
+    </div>
+  ))}
+</div>
+
+<script is:inline>
+  const carousel = document.getElementById('carousel');
+  window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    carousel.scrollLeft += e.deltaY * 2;
+  }, { passive: false });
+</script>
+</section>

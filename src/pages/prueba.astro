@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Logo from "../components/Logo.astro";
+import Carrusel from "../components/Carrusel.astro";
+import VerticalLine from "../components/VerticalLine.astro";
+---
+
+<Layout
+  tittle="Daniel Flores - Cinematographer"
+  description="Daniel Flores - Cinematographer"
+>
+  <Nav />
+
+<div class="fixed bottom-5 left-0 w-full text-black text-center z-[9999] p-4 pointer-events-none">
+  <Logo />
+</div>
+
+<div class="h-screen flex items-center">
+  <Carrusel />
+</div>
+
+<div>
+
+  <VerticalLine />
+</div>
+
+</Layout>
