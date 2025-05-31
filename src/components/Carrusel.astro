@@ -1,27 +1,42 @@
 ---
-// src/components/Carousel.astro
-const images = [
-  "/images/mini01.avif",
-  "/images/mini02.avif",
-  "/images/mini03.avif",
-  "/images/mini04.avif",
-  "/images/mini05.avif",
-  "/images/mini06.avif",
-  "/images/mini07.avif",
-  "/images/mini08.avif",
-  "/images/mini09.avif",
-  "/images/mini10.avif",
+import { client } from '../lib/prismicio'
+import { asText } from '@prismicio/helpers'
 
-];
+const proyectos = await client.getAllByType('proyecto')
 ---
 
-<div
-  class="carousel horizontal-scroll flex overflow-x-auto gap-4 px-10"
-  id="carousel"
->
-  {images.map((src) => (
-    <div class="flex-shrink-0 snap-center w-1/6">
-      <img src={src} alt="Carrusel" class="w-full h-auto object-cover" />
+<div class="carousel horizontal-scroll flex overflow-x-scroll overflow-y-visible gap-4 px-10" id="carousel">
+  {proyectos.map((proyecto) => (
+    <div class="flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center">
+      
+      <!-- Título encima visible con animación suave -->
+      <div
+        class="absolute left-0 w-full flex justify-between items-center px-1 text-black text-xs sm:text-sm translate-y-0 group-hover:-translate-y-6 transition-all duration-300 pointer-events-none"
+      >
+        <h3 class="font-semibold leading-tight">{asText(proyecto.data.titulo)}</h3>
+        <p class="text-gray-900">{proyecto.data.fecha}</p>
+      </div>
+
+      <!-- Miniatura -->
+      <div
+        class="aspect-[3/2] relative overflow-hidden w-full cursor-pointer z-10"
+        data-slug={proyecto.uid}
+      >
+        <video
+          src={proyecto.data.enlace.url}
+          muted
+          preload="none"
+          autoplay
+          playsinline
+          loop
+          class="absolute top-0 left-0 w-full h-full object-contain bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        ></video>
+        <img
+          src={proyecto.data.miniatura.url}
+          alt={asText(proyecto.data.titulo)}
+          class="w-full h-full object-cover"
+        />
+      </div>
     </div>
   ))}
 </div>
@@ -42,24 +57,25 @@ const images = [
   }
 
   .carousel.dragging {
-  cursor: grabbing;
-  cursor: -webkit-grabbing;
-  user-select: none;
-}
+    cursor: grabbing;
+    user-select: none;
+  }
 
-.carousel img {
-  pointer-events: none; /* evita que el drag afecte directamente a la imagen */
-  -webkit-user-drag: none; /* evita el drag en Safari */
-}
+  .carousel video,
+  .carousel img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
 </style>
 
 <script is:inline>
   const carousel = document.getElementById('carousel');
 
-  // Scroll con la rueda
+  // Scroll con la rueda y gesto de dos dedos en el trackpad
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
-    carousel.scrollLeft += e.deltaY * 2;
+    const movement = e.deltaY + e.deltaX;
+    carousel.scrollLeft += movement * 25;
   }, { passive: false });
 
   // Scroll por click y arrastre
@@ -88,10 +104,51 @@ const images = [
     if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - carousel.offsetLeft;
-    const walk = (x - startX) * 2; // multiplicador para sensibilidad
+    const walk = (x - startX) * 2;
     carousel.scrollLeft = scrollLeft - walk;
   });
+
+  // 3. Scroll por gesto táctil (touch)
+  carousel.addEventListener('touchstart', (e) => {
+    // Tomamos el primer punto de toque
+    isDown = true;
+    carousel.classList.add('dragging');
+    startX = e.touches[0].pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+  }, { passive: true });
+
+  carousel.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    // Evitamos el scroll vertical nativo mientras arrastramos
+    e.preventDefault();
+    const x = e.touches[0].pageX - carousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    carousel.scrollLeft = scrollLeft - walk;
+  }, { passive: false });
+
+  carousel.addEventListener('touchend', () => {
+    isDown = false;
+    carousel.classList.remove('dragging');
+  });
+
+  carousel.addEventListener('touchcancel', () => {
+    isDown = false;
+    carousel.classList.remove('dragging');
+  });
+
+
+  // Reproducir vídeo al hacer hover y bloquear drag nativo en cada video
+  document.querySelectorAll('.carousel video').forEach(video => {
+    video.addEventListener('mouseenter', () => video.play());
+    video.addEventListener('mouseleave', () => {
+      video.pause();
+      video.currentTime = 0;
+    });
+    video.addEventListener('dragstart', e => e.preventDefault());
+  });
+
+  // Evitar selección de imágenes al arrastrar
   document.querySelectorAll('.carousel img').forEach(img => {
-  img.addEventListener('dragstart', (e) => e.preventDefault());
-});
+    img.addEventListener('dragstart', e => e.preventDefault());
+  });
 </script>
