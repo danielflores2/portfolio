@@ -1,0 +1,54 @@
+<!-- 
+---
+import { client } from '../lib/prismicio'
+
+const proyectos = await client.getAllByType('proyecto')
+---
+-->
+
+
+  <!-- Filtros -->
+  <div id="filtros" class="flex flex-row justify-center gap-4 mb-8">
+    <button class="filtro active" data-filter="todos">Todos</button>
+    <button class="filtro" data-filter="videoclip">Videoclip</button>
+    <button class="filtro" data-filter="comercial">Comercial</button>
+    <button class="filtro" data-filter="color">Color</button>
+  </div>
+
+
+
+<style>
+  .filtro.active {
+    font-weight: bold;
+    border-bottom: 2px solid white;
+  }
+</style>
+
+
+<!--  
+<script is:inline>
+  function filtrarProyectos(filtro) {
+    const proyectos = document.querySelectorAll('.proyecto')
+    proyectos.forEach(p => {
+      const tags = p.dataset.tags
+      const coincide = filtro === 'todos' || tags.includes(filtro)
+      p.style.display = coincide ? 'block' : 'none'
+    })
+  }
+
+  const botones = document.querySelectorAll('.filtro')
+  botones.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      botones.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      filtrarProyectos(btn.dataset.filter)
+    })
+  })
+
+  // Observa cambios en el DOM para detectar nuevos .proyecto
+  const observer = new MutationObserver(() => {
+    const activeBtn = document.querySelector('.filtro.active')
+    if (activeBtn) filtrarProyectos(activeBtn.dataset.filter)
+  })
+  observer.observe(document.body, { childList: true, subtree: true })
+</script>-->

@@ -3,38 +3,31 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import HeroSection from "../components/HeroSection.astro";
 import Footer from "../components/Footer.astro";
-import Logo from "../components/Logo.astro";
+import Preloader from "../components/Preloader.astro";
+import CarruselSection from "../components/CarruselSection.astro";
 ---
 
 <Layout
   tittle="Daniel Flores - Cinematographer"
   description="Daniel Flores - Cinematographer"
 >
-  <Nav />
 
-<div class="fixed bottom-5 left-0 w-full text-white text-center z-[9999] p-4">
-  <Logo />
-</div>
+<Preloader />
+
+  <Nav />
 
   <main class="snap-y snap-mandatory relative w-full h-screen overflow-auto">
     <div class="snap-center">
       <HeroSection />
     </div>
     <div class="snap-center">
-      <HeroSection />
+      <CarruselSection />
     </div>
     <div class="snap-center">
-      <HeroSection />
-    </div>
-    <div class="snap-center">
-      <HeroSection />
-    </div>
-    <div class="snap-center">
-      <HeroSection />
-    </div>
-        <div class="snap-center">
-      <Footer/>
+      <Footer />
     </div>
     
   </main>
 </Layout>
+
+<script type="module" src="/scripts/filtro.js" />

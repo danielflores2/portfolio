@@ -1,0 +1,16 @@
+---
+
+import { client } from '../lib/prismicio'
+import { asText } from '@prismicio/helpers'
+
+const proyectos = await client.getAllByType('proyecto')
+const totalVideos = proyectos.length;
+
+---  
+
+<div class="flex items-center gap-4 relative">
+   <span class=" text-current">{totalVideos}</span>
+</div>
+
+
+

@@ -1,0 +1,24 @@
+---
+import Logo from './Logo.astro';
+import Carrusel from './Carrusel.astro';
+import VerticalLine from './VerticalLine.astro';
+import Filtro from './Filtro.astro';
+---
+<section class="landing-section h-screen w-full text-center relative overflow-hidden" data-header-color="black">
+
+<div class=" bottom-5 left-0 w-full text-black text-center z-[9999] p-4 pointer-events-none" view-transition-name="logo">
+  <Logo />
+</div>
+
+
+
+
+<div class="h-screen flex items-center">
+  <Carrusel />
+</div>
+
+<div>
+  <VerticalLine />
+</div>
+
+</section>
