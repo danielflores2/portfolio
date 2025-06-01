@@ -10,9 +10,15 @@ import VerticalLine from "../components/VerticalLine.astro";
   tittle="Daniel Flores - Cinematographer"
   description="Daniel Flores - Cinematographer"
 >
+
+    <!-- Preloader -->
+    <div class="preloader">
+      <div class="loader"></div>
+    </div>
+
   <Nav />
 
-<div class="fixed bottom-5 left-0 w-full text-black text-center z-[9999] p-4 pointer-events-none">
+<div class=" bottom-5 left-0 w-full text-black text-center z-[9999] p-4 pointer-events-none" view-transition-name="logo">
   <Logo />
 </div>
 
@@ -26,3 +32,49 @@ import VerticalLine from "../components/VerticalLine.astro";
 </div>
 
 </Layout>
+
+<style>
+  .preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  </style>
+
+  <script> // Preloader script
+    // Hide preloader when page is loaded
+    window.addEventListener('load', function() {
+        const preloader = document.querySelector('.preloader');
+        if (preloader) {
+            preloader.classList.add('fade-out');
+            
+            // Remove preloader from DOM after animation
+            setTimeout(() => {
+                (preloader as HTMLElement).style.display = 'none';
+            }, 1000);
+        }
+    });
+
+</script>

@@ -3,16 +3,21 @@ import { client } from '../lib/prismicio'
 import { asText } from '@prismicio/helpers'
 
 const proyectos = await client.getAllByType('proyecto')
+
+const proyectosTriplicados = [...proyectos, ...proyectos, ...proyectos];
+const middleIndex = proyectos.length; // para saber cuándo "resetear"
 ---
 
 <div class="carousel horizontal-scroll flex overflow-x-scroll overflow-y-visible gap-4 px-10" id="carousel">
-  {proyectos.map((proyecto) => (
-    <div class="flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center">
+  {proyectosTriplicados.map((proyecto) => (
+    <a
+      href={`/proyectos/${proyecto.uid}`}
+      class="flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center"
+      view-transition-name={`video-${proyecto.uid}`}
+      >
       
       <!-- Título encima visible con animación suave -->
-      <div
-        class="absolute left-0 w-full flex justify-between items-center px-1 text-black text-xs sm:text-sm translate-y-0 group-hover:-translate-y-6 transition-all duration-300 pointer-events-none"
-      >
+      <div class="absolute left-0 w-full flex justify-between items-center px-1 text-black text-xs sm:text-sm translate-y-0 group-hover:-translate-y-6 transition-all duration-300 pointer-events-none">
         <h3 class="font-semibold leading-tight">{asText(proyecto.data.titulo)}</h3>
         <p class="text-gray-900">{proyecto.data.fecha}</p>
       </div>
@@ -37,7 +42,8 @@ const proyectos = await client.getAllByType('proyecto')
           class="w-full h-full object-cover"
         />
       </div>
-    </div>
+
+    </a>
   ))}
 </div>
 
@@ -150,5 +156,42 @@ const proyectos = await client.getAllByType('proyecto')
   // Evitar selección de imágenes al arrastrar
   document.querySelectorAll('.carousel img').forEach(img => {
     img.addEventListener('dragstart', e => e.preventDefault());
+  });
+</script>
+
+<script is:inline>
+
+  // Espera a que cargue todo
+  window.addEventListener('load', () => {
+    const items = carousel.children;
+    const itemWidth = items[0].offsetWidth + 16; // Añade el gap (ajusta si tu Tailwind tiene otro)
+
+    // Empieza desde la primera "repetición"
+    carousel.scrollLeft = itemWidth * items.length / 3;
+
+    let isScrolling = false;
+
+    function loopScroll() {
+      const maxScroll = carousel.scrollWidth;
+      const scrollLeft = carousel.scrollLeft;
+
+      if (scrollLeft <= itemWidth) {
+        // Si estamos al inicio, saltamos al medio
+        carousel.scrollLeft = scrollLeft + itemWidth * (items.length / 3);
+      } else if (scrollLeft + carousel.clientWidth >= maxScroll - itemWidth) {
+        // Si llegamos al final, saltamos al medio
+        carousel.scrollLeft = scrollLeft - itemWidth * (items.length / 3);
+      }
+    }
+
+    carousel.addEventListener('scroll', () => {
+      if (!isScrolling) {
+        window.requestAnimationFrame(() => {
+          loopScroll();
+          isScrolling = false;
+        });
+        isScrolling = true;
+      }
+    });
   });
 </script>
