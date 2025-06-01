@@ -1,0 +1,10 @@
+---
+// src/components/DescripcionProyecto.astro
+import { asHTML } from '@prismicio/helpers'
+
+const { descripcion } = Astro.props
+---
+
+<section class="landing-section bg-white text-black h-screen w-full text-center relative overflow-hidden prose prose-invert prose-sm sm:prose-base"  data-header-color="black">
+  <div class="flex justify-center items-center h-full" set:html={asHTML(descripcion)} />
+</section>

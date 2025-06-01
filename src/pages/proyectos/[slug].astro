@@ -1,53 +1,57 @@
 ---
-import { client } from '../../lib/prismicio'
-import { asText, asHTML } from '@prismicio/helpers'
-import Logo from '../../components/Logo.astro'
-import Layout from '../../layouts/Layout.astro'
+import { client } from "../../lib/prismicio";
+import { asText, asHTML } from "@prismicio/helpers";
+import Logo from "../../components/Logo.astro";
+import Layout from "../../layouts/Layout.astro";
+import DescripcionProyecto from "../../components/DescripcionProyecto.astro";
+import Nav from "../../components/Nav.astro";
+import VideoProyecto from "../../components/VideoProyecto.astro";
 
 export async function getStaticPaths() {
-  const proyectos = await client.getAllByType('proyecto')
+  const proyectos = await client.getAllByType("proyecto");
   return proyectos.map((proyecto) => ({
     params: { slug: proyecto.uid },
     props: { page: proyecto },
-  }))
+  }));
 }
 
-const { page } = Astro.props
+const { page } = Astro.props;
 ---
+
 <Layout
-    tittle={asText(page.data.titulo)}
-    description={asText(page.data.descripcion)}
+  tittle={asText(page.data.titulo)}
+  description={asText(page.data.descripcion)}
 >
   <head>
+    <Nav />
 
     <title>{asText(page.data.titulo)}</title>
     <meta name="description" content={asText(page.data.descripcion)} />
-
   </head>
 
-<main class="h-screen w-full text-center relative overflow-hidden bg-black">
-    <div
-        class="absolute top-0 bottom-0 left-0 right-0 h-full w-full flex items-center justify-center"
-        view-transition-name={`video-${page.uid}`}
-    >
-        <video
-            src={page.data.enlace.url}
-            autoplay
-            muted
-            controls
-            playsinline
-            class="max-w-full max-h-full"
-        ></video>
+  <main
+    class="text-center bg-black text-white snap-y snap-mandatory relative w-full h-screen overflow-auto"
+  >
+    <div class="snap-center">
+      <VideoProyecto
+        videoUrl={page.data.enlace.url}
+        titulo={page.data.titulo}
+        fecha={page.data.fecha}
+        uid={page.uid}
+      />
     </div>
-    <div class="absolute top-0 left-0 w-full max-w-3xl text-white p-4">
-        <h1 class="text-3xl font-bold">{asText(page.data.titulo)}</h1>
-        <p class="text-sm text-gray-400">{page.data.fecha}</p>
-        <div class="mt-4" set:html={asHTML(page.data.descripcion)} />
-    </div>
-</main>
 
-<div class="fixed bottom-5 left-0 w-full text-white text-center z-[9999] p-4 pointer-events-none" view-transition-name="logo">
+    <div class="snap-center">
+      <!-- Sección de descripción que aparece al hacer scroll -->
+      <DescripcionProyecto descripcion={page.data.descripcion} />
+    </div>
+  </main>
+
+  <!-- Logo fijo -->
+  <div
+    class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-80 text-white text-center z-[9999] p-4 pointer-events-none"
+    view-transition-name="logo"
+  >
     <Logo />
-</div>
-
+  </div>
 </Layout>

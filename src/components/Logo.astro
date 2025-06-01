@@ -1,3 +1,6 @@
+
+<div id="logo">
+
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1878.25 260.28" fill="currentColor">
   <path d="M0,16.25c19.13-2.89,41.88-5.05,66.78-5.05,45.12,0,77.25,10.47,98.55,30.32,21.66,19.85,34.29,48.01,34.29,87.36s-12.27,72.2-35.02,94.58c-22.74,22.74-60.29,35.02-107.58,35.02-22.38,0-41.15-1.08-57.04-2.89V16.25ZM31.41,231.4c7.94,1.44,19.49,1.8,31.77,1.8,67.15,0,103.6-37.54,103.6-103.24.36-57.4-32.13-93.86-98.55-93.86-16.24,0-28.52,1.44-36.82,3.25v192.05Z"/>
@@ -13,3 +16,32 @@
   <path d="M1614.01,174.72c.72,42.96,28.16,60.65,59.92,60.65,22.74,0,36.46-3.97,48.37-9.02l5.42,22.74c-11.19,5.05-30.32,10.83-58.12,10.83-53.79,0-85.92-35.38-85.92-88.08s31.04-94.22,81.95-94.22c57.04,0,72.2,50.18,72.2,82.31,0,6.5-.72,11.55-1.08,14.8h-122.74ZM1707.14,151.98c.36-20.21-8.3-51.62-44.04-51.62-32.13,0-46.21,29.6-48.73,51.62h92.77Z"/>
   <path d="M1771.76,223.82c9.39,6.14,25.99,12.63,41.88,12.63,23.1,0,33.93-11.55,33.93-25.99,0-15.16-9.03-23.46-32.49-32.13-31.41-11.19-46.21-28.52-46.21-49.46,0-28.16,22.74-51.26,60.29-51.26,17.69,0,33.21,5.05,42.96,10.83l-7.94,23.1c-6.86-4.33-19.49-10.11-35.74-10.11-18.77,0-29.24,10.83-29.24,23.83,0,14.44,10.47,20.94,33.21,29.6,30.32,11.55,45.85,26.71,45.85,52.7,0,30.68-23.83,52.34-65.34,52.34-19.13,0-36.82-4.69-49.09-11.91l7.94-24.19Z"/>
 </svg>
+
+</div>
+
+
+  <!-- Add this script to handle the header color change on scroll-->
+<script>
+  const headerEl = document.querySelector("#logo") as HTMLElement
+  
+  const observerOptions = { 
+    root: null,
+    rootMargin: "0px", 
+    threshold: 0.1 
+  }  
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { 
+      const { isIntersecting } = entry
+      if (isIntersecting) {
+        const color = entry.target.getAttribute("data-header-color")
+        headerEl.style.color = color ?? ""
+
+      }  
+    })
+  }, observerOptions) 
+
+  const sectionsElement = document.querySelectorAll(".landing-section")
+  sectionsElement.forEach((section) => observer.observe(section))
+
+</script>  

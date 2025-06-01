@@ -1,0 +1,23 @@
+---
+// src/components/VideoProyecto.astro
+import { asText } from '@prismicio/helpers'
+
+const { videoUrl, titulo, fecha, uid } = Astro.props
+---
+
+<section class="landing-section h-screen w-full flex items-center justify-center relative overflow-hidden" data-header-color="white">
+  <video
+    src={videoUrl}
+    autoplay
+    muted
+    controls
+    playsinline
+    class="w-full h-full"
+    view-transition-name={`video-${uid}`}
+  ></video>
+
+  <div class="absolute top-0 py-4 left-1/2 transform -translate-x-1/2 text-center px-4">
+    <h1 class="">{asText(titulo)}</h1>
+    <p class="">{fecha}</p>
+  </div>
+</section>
