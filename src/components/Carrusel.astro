@@ -10,22 +10,21 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
 
 
 <div class="carousel horizontal-scroll flex overflow-x-scroll overflow-y-visible gap-4 px-10" id="carousel">
-  {proyectosTriplicados.map((proyecto) => (
+  {proyectos.map((proyecto) => (
     <a
       id="video-item"
       href={`/proyectos/${proyecto.uid}`}
       class="proyecto flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center"
-      view-transition-name={`video-${proyecto.uid}`}
       data-tags={proyecto.tags.join(' ').toLowerCase()}
       >
       
-      <!-- Título encima visible con animación suave -->
+      <!-- Título y fecha -->
       <div class="absolute left-0 w-full flex justify-between items-center px-1 text-black text-xs sm:text-sm translate-y-0 group-hover:-translate-y-6 transition-all duration-300 pointer-events-none">
         <h3 class="font-semibold leading-tight">{asText(proyecto.data.titulo)}</h3>
         <p class="text-gray-900">{proyecto.data.fecha}</p>
       </div>
 
-      <!-- Miniatura -->
+      <!-- Miniaturas carrusel -->
       <div
         class="aspect-[3/2] relative overflow-hidden w-full cursor-pointer z-10"
         data-slug={proyecto.uid}
@@ -33,11 +32,12 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
         <video
           src={proyecto.data.enlace.url}
           muted
-          preload="none"
+          preload="auto"
           autoplay
           playsinline
           loop
           class="absolute top-0 left-0 w-full h-full object-contain bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          transition:name={`video-${proyecto.uid}`}
         ></video>
         <img
           src={proyecto.data.miniatura.url}
@@ -78,7 +78,7 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
 </style>
 
 
-<!-- Script para el carrusel -->
+<!-- Script para el carrusel 
 <script is:inline>
   const carousel = document.getElementById('carousel');
 
@@ -162,9 +162,9 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
   document.querySelectorAll('.carousel img').forEach(img => {
     img.addEventListener('dragstart', e => e.preventDefault());
   });
-</script>
+</script>-->
 
-<!-- Script para el scroll infinito -->
+<!-- Script para el scroll infinito 
 <script is:inline>
 
   // Espera a que cargue todo
@@ -200,4 +200,4 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
       }
     });
   });
-</script>
+</script>-->

@@ -23,8 +23,6 @@ const { page } = Astro.props;
   description={asText(page.data.descripcion)}
 >
   <head>
-    <Nav />
-
     <title>{asText(page.data.titulo)}</title>
     <meta name="description" content={asText(page.data.descripcion)} />
   </head>
@@ -32,6 +30,9 @@ const { page } = Astro.props;
   <main
     class="text-center bg-black text-white snap-y snap-mandatory relative w-full h-screen overflow-auto"
   >
+    <Nav />
+
+    <!-- Sección de video que aparece al cargar la página -->
     <div class="snap-center">
       <VideoProyecto
         videoUrl={page.data.enlace.url}
@@ -41,17 +42,17 @@ const { page } = Astro.props;
       />
     </div>
 
+    <!-- Sección de descripción que aparece al hacer scroll -->
     <div class="snap-center">
-      <!-- Sección de descripción que aparece al hacer scroll -->
       <DescripcionProyecto descripcion={page.data.descripcion} />
     </div>
-  </main>
 
-  <!-- Logo fijo -->
-  <div
-    class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-80 text-white text-center z-[9999] p-4 pointer-events-none"
-    view-transition-name="logo"
-  >
-    <Logo />
-  </div>
+    <!-- Logo fijo -->
+    <div
+      class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-80 text-white text-center z-[9999] p-4 pointer-events-none"
+      transition:name="logo"
+    >
+      <Logo />
+    </div>
+  </main>
 </Layout>

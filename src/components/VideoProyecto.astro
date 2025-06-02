@@ -12,8 +12,9 @@ const { videoUrl, titulo, fecha, uid } = Astro.props
     muted
     controls
     playsinline
+    preload="auto"
     class="w-full h-full"
-    view-transition-name={`video-${uid}`}
+    transition:name={`video-${uid}`}
   ></video>
 
   <div class="absolute top-0 py-4 left-1/2 transform -translate-x-1/2 text-center px-4">
