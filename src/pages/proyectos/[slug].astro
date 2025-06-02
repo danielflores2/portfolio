@@ -30,8 +30,13 @@ const { page } = Astro.props;
   <main
     class="text-center bg-black text-white snap-y snap-mandatory relative w-full h-screen overflow-auto"
   >
+
+  <div class="video-autohide">
+
     <Nav />
 
+  </div>
+  
     <!-- Sección de video que aparece al cargar la página -->
     <div class="snap-center">
       <VideoProyecto
@@ -49,7 +54,7 @@ const { page } = Astro.props;
 
     <!-- Logo fijo -->
     <div
-      class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-80 text-white text-center z-[9999] p-4 pointer-events-none"
+      class="video-autohide fixed bottom-5 left-1/2 transform -translate-x-1/2 w-80 text-white text-center z-[9999] p-4 pointer-events-none"
       transition:name="logo"
     >
       <Logo />

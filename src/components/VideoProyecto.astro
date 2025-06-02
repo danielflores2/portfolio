@@ -1,24 +1,201 @@
 ---
 // src/components/VideoProyecto.astro
-import { asText } from '@prismicio/helpers'
+import { asText } from "@prismicio/helpers";
 
-const { videoUrl, titulo, fecha, uid } = Astro.props
+const { videoUrl, titulo, fecha, uid } = Astro.props;
 ---
 
-<section class="landing-section h-screen w-full flex items-center justify-center relative overflow-hidden" data-header-color="white">
-  <video
-    src={videoUrl}
-    autoplay
-    muted
-    controls
-    playsinline
-    preload="auto"
-    class="w-full h-full"
-    transition:name={`video-${uid}`}
-  ></video>
 
-  <div class="absolute top-0 py-4 left-1/2 transform -translate-x-1/2 text-center px-4">
-    <h1 class="">{asText(titulo)}</h1>
-    <p class="">{fecha}</p>
+<section
+  id={`video-container-${uid}`}
+  class="landing-section h-screen w-full flex items-center justify-center relative overflow-hidden"
+  data-header-color="white"
+>
+  <!-- Área completa interactiva -->
+  <div id={`seek-area-${uid}`} class="relative w-full h-full bg-black">
+    <!-- Vídeo sin controles nativos -->
+    <video
+      id={`video-${uid}`}
+      data-uid={uid}
+      class="w-full h-full bg-black z-0 pointer-events-auto"
+      src={videoUrl}
+      playsinline
+      autoplay
+      muted
+      loop
+      preload="auto"
+      transition:name={`video-${uid}`}></video>
+
+    <!-- Timecode (arriba, centrado) -->
+<div class="flex justify-between items-center py-4 px-10 fixed top-0 w-full z-40">
+      <div
+      id={`timecode-${uid}`}
+      class="video-autohide absolute top-0 py-4 left-1/2 transform -translate-x-1/2 text-center px-4 transition-opacity duration-300 "
+    >
+      00:00 / 00:00
+    </div>
+
+</div>
+
+
+
+    <!-- Barra de progreso personalizada container -->
+    <div
+      id={`progress-bar-${uid}`}
+      class="video-autohide absolute z-10 top-0 left-0 w-full h-full pointer-events-none transition-opacity duration-300"
+    >
+      <!-- Línea vertical que avanza (thumb) -->
+      <div
+        transition:name="vertical-line"
+        id={`progress-thumb-${uid}`}
+        class="video-autohide absolute z-20 top-0 left-0 h-full w-0.5 bg-red-500 pointer-events-none"
+      ></div>
+    </div>
   </div>
+
+  <!-- Título y fecha 
+  <div
+    id={`video-ui-header-${uid}`}
+    class="video-autohide absolute top-0 py-4 left-1/2 transform -translate-x-1/2 text-center px-4 transition-opacity duration-300"
+  >
+    <h1 class="text-xl font-bold text-white">{asText(titulo)}</h1>
+    <p class="text-sm text-white">{fecha}</p>
+  </div>-->
+
+<script type="module">
+  window.addEventListener("DOMContentLoaded", () => {
+    const video = document.querySelector("video[data-uid]");
+    const uid = video?.dataset?.uid;
+
+    if (!video || !uid) {
+      console.error("🔥 No se encontró el video o el uid");
+      return;
+    }
+
+    const thumb = document.getElementById(`progress-thumb-${uid}`);
+    const bar = document.getElementById(`progress-bar-${uid}`);
+    const container = document.getElementById(`video-container-${uid}`);
+    const seekArea = document.getElementById(`seek-area-${uid}`);
+    const timecode = document.getElementById(`timecode-${uid}`);
+    const uiElements = document.querySelectorAll(".video-autohide");
+
+    let dragging = false;
+    let mouseDown = false;
+    let startX = 0;
+    let uiTimeout;
+    const DRAG_THRESHOLD = 5;
+
+    video.volume = 1;
+    video.controls = false;
+
+    function formatTime(t) {
+      if (isNaN(t)) return "00:00";
+      const minutes = Math.floor(t / 60).toString().padStart(2, "0");
+      const seconds = Math.floor(t % 60).toString().padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    }
+
+    function updateTimecode(current = video.currentTime) {
+      const dur = video.duration || 0;
+      timecode.innerText = `${formatTime(current)} / ${formatTime(dur)}`;
+    }
+
+    function updateProgressBar() {
+      if (!dragging) {
+        const progress = video.currentTime / video.duration;
+        const barWidth = bar.clientWidth;
+        thumb.style.left = `${progress * barWidth}px`;
+        updateTimecode(video.currentTime);
+      }
+    }
+
+    // Actualiza la barra a 24fps
+    setInterval(updateProgressBar, 1000 / 24);
+
+    video.addEventListener("loadedmetadata", () => updateTimecode(0));
+    video.addEventListener("dblclick", (e) => e.preventDefault());
+
+    function handleSeekStart(e) {
+      mouseDown = true;
+      dragging = false;
+      startX = e.clientX;
+      e.preventDefault();
+    }
+
+    function handleSeekMove(e) {
+      if (!mouseDown) return;
+
+      const deltaX = Math.abs(e.clientX - startX);
+      if (!dragging && deltaX > DRAG_THRESHOLD) {
+        dragging = true;
+      }
+
+      if (dragging) {
+        const rect = bar.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        x = Math.max(0, Math.min(x, rect.width));
+        thumb.style.left = `${x}px`;
+        const newTime = (x / rect.width) * video.duration;
+        updateTimecode(newTime);
+      }
+    }
+
+    function handleSeekEnd(e) {
+      if (dragging) {
+        const rect = bar.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        x = Math.max(0, Math.min(x, rect.width));
+        const newTime = (x / rect.width) * video.duration;
+        video.currentTime = newTime;
+      } else {
+        video.paused ? video.play() : video.pause();
+      }
+
+      dragging = false;
+      mouseDown = false;
+    }
+
+    // Interacción
+    seekArea.addEventListener("mousedown", handleSeekStart);
+    document.addEventListener("mousemove", handleSeekMove);
+    document.addEventListener("mouseup", handleSeekEnd);
+
+    // Autohide UI y cursor
+    document.addEventListener("mousemove", () => {
+      showUI();
+      clearTimeout(uiTimeout);
+      uiTimeout = setTimeout(() => {
+        if (!dragging) hideUI();
+      }, 1000);
+    });
+
+    function showUI() {
+      uiElements.forEach(el => el.classList.remove("inactive"));
+      container?.classList.remove("hide-cursor");
+    }
+
+    function hideUI() {
+      uiElements.forEach(el => el.classList.add("inactive"));
+      container?.classList.add("hide-cursor");
+    }
+
+    showUI(); // Al iniciar
+
+    document.addEventListener("keydown", (e) => {
+  // Solo actuar si estamos enfocados en la ventana principal
+  const active = document.activeElement;
+  const isTyping = active && (
+    active.tagName === "INPUT" || 
+    active.tagName === "TEXTAREA" || 
+    active.isContentEditable
+  );
+  if (isTyping) return;
+
+  if (e.code === "Space") {
+    e.preventDefault(); // evita que haga scroll
+    video.paused ? video.play() : video.pause();
+  }
+});
+  });
+</script>
 </section>

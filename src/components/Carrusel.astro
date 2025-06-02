@@ -3,19 +3,15 @@ import { client } from '../lib/prismicio'
 import { asText } from '@prismicio/helpers'
 
 const proyectos = await client.getAllByType('proyecto')
-
-const proyectosTriplicados = [...proyectos, ...proyectos, ...proyectos];
-const middleIndex = proyectos.length; // para saber cuándo "resetear"
 ---
 
-
-<div class="carousel horizontal-scroll flex overflow-x-scroll overflow-y-visible gap-4 px-10" id="carousel">
+<div id="carousel" class="carousel horizontal-scroll flex overflow-x-scroll overflow-y-visible gap-4 px-10">
   {proyectos.map((proyecto) => (
     <a
-      id="video-item"
       href={`/proyectos/${proyecto.uid}`}
-      class="proyecto flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center"
+      class="proyecto video-item flex-shrink-0 w-1/6 relative group horizontal-scroll snap-proximity snap-center"
       data-tags={proyecto.tags.join(' ').toLowerCase()}
+      draggable="false"
       >
       
       <!-- Título y fecha -->
@@ -26,14 +22,13 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
 
       <!-- Miniaturas carrusel -->
       <div
-        class="aspect-[3/2] relative overflow-hidden w-full cursor-pointer z-10"
+        class="aspect-[3/2] relative overflow-hidden w-full cursor-pointer"
         data-slug={proyecto.uid}
       >
         <video
           src={proyecto.data.enlace.url}
           muted
           preload="auto"
-          autoplay
           playsinline
           loop
           class="absolute top-0 left-0 w-full h-full object-contain bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -72,13 +67,12 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
 
   .carousel video,
   .carousel img {
-    pointer-events: none;
     -webkit-user-drag: none;
   }
 </style>
 
 
-<!-- Script para el carrusel 
+<!-- Script para el carrusel -->
 <script is:inline>
   const carousel = document.getElementById('carousel');
 
@@ -86,7 +80,7 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
   carousel.addEventListener('wheel', (e) => {
     e.preventDefault();
     const movement = e.deltaY + e.deltaX;
-    carousel.scrollLeft += movement * 25;
+    carousel.scrollLeft += movement * 2;
   }, { passive: false });
 
   // Scroll por click y arrastre
@@ -147,57 +141,24 @@ const middleIndex = proyectos.length; // para saber cuándo "resetear"
     carousel.classList.remove('dragging');
   });
 
+</script> 
 
-  // Reproducir vídeo al hacer hover y bloquear drag nativo en cada video
-  document.querySelectorAll('.carousel video').forEach(video => {
-    video.addEventListener('mouseenter', () => video.play());
-    video.addEventListener('mouseleave', () => {
-      video.pause();
-      video.currentTime = 0;
-    });
-    video.addEventListener('dragstart', e => e.preventDefault());
-  });
-
-  // Evitar selección de imágenes al arrastrar
-  document.querySelectorAll('.carousel img').forEach(img => {
-    img.addEventListener('dragstart', e => e.preventDefault());
-  });
-</script>-->
-
-<!-- Script para el scroll infinito 
+<!-- Script para reproducir vídeos al hacer hover y bloquear drag nativo -->
 <script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    // Reproducir vídeo al hacer hover y bloquear drag nativo
+    document.querySelectorAll('.video-item video').forEach(video => {
+      video.addEventListener('mouseenter', () => video.play());
+      video.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      video.addEventListener('dragstart', e => e.preventDefault());
+    });
 
-  // Espera a que cargue todo
-  window.addEventListener('load', () => {
-    const items = carousel.children;
-    const itemWidth = items[0].offsetWidth + 16; // Añade el gap (ajusta si tu Tailwind tiene otro)
-
-    // Empieza desde la primera "repetición"
-    carousel.scrollLeft = itemWidth * items.length / 3;
-
-    let isScrolling = false;
-
-    function loopScroll() {
-      const maxScroll = carousel.scrollWidth;
-      const scrollLeft = carousel.scrollLeft;
-
-      if (scrollLeft <= itemWidth) {
-        // Si estamos al inicio, saltamos al medio
-        carousel.scrollLeft = scrollLeft + itemWidth * (items.length / 3);
-      } else if (scrollLeft + carousel.clientWidth >= maxScroll - itemWidth) {
-        // Si llegamos al final, saltamos al medio
-        carousel.scrollLeft = scrollLeft - itemWidth * (items.length / 3);
-      }
-    }
-
-    carousel.addEventListener('scroll', () => {
-      if (!isScrolling) {
-        window.requestAnimationFrame(() => {
-          loopScroll();
-          isScrolling = false;
-        });
-        isScrolling = true;
-      }
+    // Evitar selección de imágenes al arrastrar
+    document.querySelectorAll('.video-item img').forEach(img => {
+      img.addEventListener('dragstart', e => e.preventDefault());
     });
   });
-</script>-->
+</script>
